@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1, shrink-to-fit=no, width=device-width" name="viewport">
+      <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Add Material CSS, replace Bootstrap CSS -->
+    <link href="assets/css/material.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/home.css">
+    <title>Recibir Respuesta de un Formulario en formato JSON con AJAX</title>
+  </head>
+  <body>
+
+    <div class="loader">
+      <div class="preloader"></div>
+      <div class="loadBar">
+        <div class="progress"></div>
+      </div>
+    </div>
+    
+  <div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12 mb-5">
+        <h2 class="text-center mt-3">Recibir respuesta en formato JSON con AJAX <hr></h2>
+    </div>
+
+    <div class="col-md-12">
+        <form name="my-form" id="my-form" method="POST" autocomplete="off">
+            <div class="form-group">
+                <label for="Nombre">Nombre</label>
+                <input type="text" name="Nombre" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="Correo">Correo</label>
+                <input type="email" name="Correo" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="Movil">Movil</label>
+                <input type="number" name="Movil" class="form-control" required>
+            </div>
+        
+            <div class="form-group mb-5 text-center mt-5">
+                <button type="submit" id="btnSendForm" class="btn btn-primary btn-sm">Enviar Formulario</button>
+
+                <div id="snipper" style="display: none;">
+                  <div class="loadingspinner"></div> 
+                  <p class="negrita">Enviando información ....</p>
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <div class="row justify-content-center msjAlert d-none">
+    <div class="col-md-12 mb-5">
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Felicitaciones!</strong> ha recibido una respuesta en formato JSON con
+        <strong>AJAX</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="assets/js/material.min.js"></script>
+
+    <script>
+
+
+    $("#my-form1").submit(function(event){
+      event.preventDefault(); //PREVENIR UNA RECARGA
+      var post_url = "recibForm.php"; //ACCION DEL FORMULARIO
+      var request_method = $(this).attr("method"); //METODO DEL FORMULARIO
+      var form_data = $(this).serialize(); //RECIBIENDO TODOS LOS DATOS DEL FORMULARIO
+      var status_msj = false;
+
+
+      $("#btnSendForm").hide(50);
+      $("#snipper").show(50);
+        $.ajax({
+          url : post_url,
+          type: request_method,
+          data : form_data,
+          success: function(response) {
+            console.log(response);
+            if (response["msj"] === true) {
+              if(status_msj !=true){
+                $("#snipper").hide(100);
+                console.log('Todo OK');
+              }
+             
+              $('.msjAlert').removeClass('d-none');
+              $("#my-form")[0].reset(); //Limpiando el formulario
+              
+          }else{
+            console.log('Error')
+          }
+        },
+        complete: function(response) {
+          status_msj = false;
+          $("#btnSendForm").show(50);
+          console.log('%c Proceso terminado! ', 'background: green; color: #fff; padding: 8px 10px;');
+        }
+      });
+    });
+
+
+    //Segunda forma de enviar el formulario 
+    $("#my-form").submit(function(event){
+      event.preventDefault(); 
+      var post_url = "recibForm.php"; 
+      var form_data = $(this).serialize();
+      
+      $.post( post_url, form_data, function( response ) {
+        //$("#resp").html( response );
+      });
+});
+  </script>
+
+
+  </body>
+</html>
