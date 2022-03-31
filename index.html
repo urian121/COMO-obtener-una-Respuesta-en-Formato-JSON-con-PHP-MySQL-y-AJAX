@@ -10,6 +10,12 @@
     <link href="assets/css/material.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/home.css">
     <title>Recibir Respuesta de un Formulario en formato JSON con AJAX</title>
+    <style>
+    small{
+      color: crimson;
+      font-weight: bold;
+    }
+    </style>
   </head>
   <body>
 
@@ -30,15 +36,16 @@
         <form name="my-form" id="my-form" method="POST" autocomplete="off">
             <div class="form-group">
                 <label for="Nombre">Nombre</label>
-                <input type="text" name="Nombre" class="form-control" required>
+                <input type="text" name="Nombre" id="Nombre" class="form-control">
             </div>
             <div class="form-group">
                 <label for="Correo">Correo</label>
-                <input type="email" name="Correo" class="form-control" required>
+                <input type="email" name="Correo" id="Correo" class="form-control">
+                <small id="errorEmail"></small>
             </div>
             <div class="form-group">
                 <label for="Movil">Movil</label>
-                <input type="number" name="Movil" class="form-control" required>
+                <input type="number" name="Movil" id="Movil" class="form-control" required>
             </div>
         
             <div class="form-group mb-5 text-center mt-5">
@@ -74,18 +81,33 @@
     <script src="assets/js/material.min.js"></script>
 
     <script>
-
-
-    $("#my-form1").submit(function(event){
+    $("#my-form").submit(function(event){
       event.preventDefault(); //PREVENIR UNA RECARGA
       var post_url = "recibForm.php"; //ACCION DEL FORMULARIO
       var request_method = $(this).attr("method"); //METODO DEL FORMULARIO
       var form_data = $(this).serialize(); //RECIBIENDO TODOS LOS DATOS DEL FORMULARIO
       var status_msj = false;
 
+      //Validando en el Backen que los inputs no lleguen vacios
+      let Nombre = $('#Nombre').val();
+      let Correo = $('#Correo').val();
+      let Movil = $('#Movil').val();
+
+
+      if((Nombre == "") || (Nombre == null) || (Nombre == undefined)){
+        alert("Debes escribir tu Nombre");
+        return;
+      }else if((Correo == "") || (Correo == null) || (Correo == undefined)){
+        $("#errorEmail").html('Campo obligatorio OK');
+        return;
+      }else if((Movil == "") || (Movil == null) || (Movil == undefined)){
+        alert("Debes escribir tu Telefono");
+        return;
+      }else{  
 
       $("#btnSendForm").hide(50);
       $("#snipper").show(50);
+
         $.ajax({
           url : post_url,
           type: request_method,
@@ -111,11 +133,15 @@
           console.log('%c Proceso terminado! ', 'background: green; color: #fff; padding: 8px 10px;');
         }
       });
-    });
+
+    }
+    
+  });
 
 
-    //Segunda forma de enviar el formulario 
-    $("#my-form").submit(function(event){
+
+  //Segunda forma de enviar el formulario 
+    $("#my-formX").submit(function(event){
       event.preventDefault(); 
       var post_url = "recibForm.php"; 
       var form_data = $(this).serialize();
